@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>useMemo</title>
+    <!-- React CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+
+        function UserSearch() {
+
+            const [search, setSearch] = React.useState('');
+
+            function busqueda(event) {
+                setSearch(event.target.value);
+            }
+
+            const [users, setUser] = React.useState([
+                {
+                    name: 'Billy Butcher',
+                    description: 'Le gusta cazar supers y hacer justicia a su manera',
+                },
+                {
+                    name: 'Hughie Campbell',
+                    description: 'Disfruta escuchar música y cuestionar la moralidad de los héroes',
+                },
+                {
+                    name: 'Homelander',
+                    description: 'Ama ser adorado y controlar a todos con miedo',
+                },
+                {
+                    name: 'Starlight',
+                    description: 'Le gusta ayudar a los demás y cree en la justicia real',
+                },
+                {
+                    name: 'Frenchie',
+                    description: 'Le apasionan las armas y el trabajo encubierto',
+                },
+            ]);
+
+            const Filtro = React.useMemo(function () {
+                console.log('Se uso el filtro ');
+                return users.filter(function (user) {
+                    return (
+                        user.name.toLowerCase().includes(search.toLowerCase()) ||
+                        user.description.toLowerCase().includes(search.toLowerCase())
+                    );
+                });
+
+            }, [search, users]);
+
+            const [nombre, setNombre] = React.useState('');
+
+            function Nombre (event){
+                setNombre(event.target.value)
+            }
+
+            const [descripcion, setDescripcion] = React.useState('');
+
+            function Descripcion (event){
+                setDescripcion(event.target.value)
+            }
+
+
+            function agregarUser() {
+                if (nombre.trim() !== '' && descripcion.trim() !== '') {
+                    setUser(users.concat({ name: nombre, description: descripcion }));
+                    setNombre('');
+                    setDescripcion('');
+                }
+            }
+            return (
+                <div  >
+                    <input
+                        type="text"
+                        placeholder="Buscar. . ."
+                        value={search}
+                        onChange={busqueda}
+                        style={{ padding: '5px', width: '30%', margin: 'auto' }}
+                    />
+
+                    <input
+                    type = "text"
+                    placeholder="Ingresa nombre"
+                    value={nombre}
+                    onChange={Nombre}
+                    style={{ marginLeft: '25%'  }}
+                    />
+
+                    <input
+                    type = "text"
+                    placeholder="Ingresa Descripcion"
+                    value={descripcion}
+                    onChange={Descripcion}
+                    style={{ marginLeft: '55.9%'  }}
+                    />
+
+                    <ul>
+                        {
+                            Filtro.map(function (users, index) {
+                                return (
+                                    <li key={index}>
+                                        <strong>{users.name}</strong>: {users.description}
+                                    </li>
+                                );
+                            })
+                        }
+                    </ul>
+
+
+                    <button onClick={agregarUser}> Agregar </button>
+
+                </div>
+            );
+        }
+
+        function App() {
+            return <UserSearch />;
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<App />)
+    </script>
+
+</body>
+
+</html>
